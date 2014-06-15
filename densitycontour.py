@@ -140,7 +140,7 @@ class RasterizedData(object):
                        self.xedges[:-1]).reshape((1, nbins_x))
         y_bin_sizes = (self.yedges[1:] -
                        self.yedges[:-1]).reshape((nbins_y, 1))
-        self.pdf = hist * (x_bin_sizes * y_bin_sizes)
+        self.pdf = hist.T * (x_bin_sizes * y_bin_sizes)
         self.levels = {}
         return None
 
@@ -202,7 +202,7 @@ class ContourVisualizerBase(object):
         """
         self._xorig = 0.5 * (other.xedges[1:] + other.xedges[:-1])
         self._yorig = 0.5 * (other.yedges[1:] + other.yedges[:-1])
-        self._zorig = other.pdf.T
+        self._zorig = other.pdf
         self.levelfinder = other.level_by_confidence
         return None
 
