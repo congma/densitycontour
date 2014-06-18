@@ -94,12 +94,12 @@ class ScatterData(object):
         """
         # Produce the memo key by normalizing the input parameters.
         memokey = _getkeybysig(nbins_x, nbins_y, clipping)
-        if memokey in self._rasters:    # Try consulting the memo table first.
-            return self._rasters[memokey]
-        # Not yet in memo, so create-and-intern it.
-        result = RasterizedData(self, memokey[0], memokey[1],
-                                clipping=clipping)
-        self._rasters[memokey] = result
+        try:  # Consult the memo table first.
+            result = self._rasters[memokey]
+        except KeyError:  # Not yet in memo, so create it.
+            result = RasterizedData(self, memokey[0], memokey[1],
+                                    clipping=clipping)
+            self._rasters[memokey] = result
         return result
 
     def forget_rasters(self, num=1, totally=False):
@@ -160,12 +160,13 @@ class RasterizedData(object):
         assert 0.0 <= confidence_level <= 1.0
         # Use natively typed value as key.
         conf_native = float(confidence_level)
-        if conf_native in self.levels:   # if already memoized
-            return self.levels[conf_native]
-        res = scipy.optimize.brentq(_find_confidence_interval, 0., 1.,
-                                    args=(self.pdf, confidence_level))
-        self.levels[conf_native] = res
-        return res
+        try:
+            result = self.levels[conf_native]
+        except KeyError:
+            result = scipy.optimize.brentq(_find_confidence_interval, 0., 1.,
+                                           args=(self.pdf, confidence_level))
+            self.levels[conf_native] = result
+        return result
 
     def forget_levels(self, num=1, totally=False):
         """Forget up to num plotting levels, unless totally = True,
