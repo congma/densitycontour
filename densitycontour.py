@@ -158,7 +158,6 @@ class RasterizedData(object):
         clipping: Valid ranges of data, points outside of which are considered
                   outliers and discarded in further processings.
         """
-
         hist, self.xedges, self.yedges = numpy.histogram2d(
             other.xdata, other.ydata,
             bins=(nbins_x, nbins_y),
