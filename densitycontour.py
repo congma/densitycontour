@@ -13,15 +13,23 @@ __all__ = ["ScatterData", "RasterizedData", "ContourVisualizerBase",
            "MFZoomedContourVisualizer"]
 
 
-def _getkeybysig(nbins_x, nbins_y, clipping):
+def _getkeybysig(nbins_x, nbins_y, clipping, datarefx, datarefy):
     """Calculate raster interning key by the signature of its creation call."""
-    nbx = int(nbins_x)
-    nby = int(nbins_y)
     if clipping is not None:
         # Unpack the range parameters and store as Python native type.
         ranges = tuple(float(x) for x in numpy.asarray(clipping).flat)
+        cpv = clipping
     else:
         ranges = None
+        cpv = (None, None)
+    if nbins_x is None:
+        nbx = _freedman_diaconis_nbins(datarefx, cpv[0])
+    else:
+        nbx = int(nbins_x)
+    if nbins_y is None:
+        nby = _freedman_diaconis_nbins(datarefy, cpv[1])
+    else:
+        nby = int(nbins_y)
     return (nbx, nby, ranges)
 
 
@@ -66,6 +74,23 @@ def _destroy_dict(what, num, totally):
     return count
 
 
+def _freedman_diaconis_nbins(data1d, clipping):
+    """Calculate the number of bins for 1-d data according to
+    Freedman-Diaconis's rule.
+    """
+    if clipping is not None:
+        upper = numpy.max(clipping)
+        lower = numpy.min(clipping)
+        mask = (data1d >= lower) & (data1d <= upper)
+        dataview = data1d[mask]
+    else:
+        dataview = data1d
+    pwidth = numpy.percentile(dataview, 75) - numpy.percentile(dataview, 25)
+    datarange = dataview.max() - dataview.min()
+    return int(datarange * numpy.power(dataview.shape[0], 1.0 / 3.0) /
+               2.0 / pwidth)
+
+
 class ScatterData(object):
     """Class holding reference to the scatter-point data."""
     def __init__(self, xdata, ydata):
@@ -78,12 +103,13 @@ class ScatterData(object):
         self._rasters = weakref.WeakValueDictionary()
         return None
 
-    def rasterize(self, nbins_x, nbins_y, clipping=None):
+    def rasterize(self, nbins_x=None, nbins_y=None, clipping=None):
         """Rasterize self by binning the scattered points.
 
         Arguments
         --------
         nbins_x, nbins_y: Number of bins in the x- and y- dimensions.
+                          If None, apply the Freedman-Diaconis rule.
         clipping: Valid ranges of data, points outside of which are considered
                   outliers and discarded in further processings.
 
@@ -93,7 +119,8 @@ class ScatterData(object):
         one.
         """
         # Produce the memo key by normalizing the input parameters.
-        memokey = _getkeybysig(nbins_x, nbins_y, clipping)
+        memokey = _getkeybysig(nbins_x, nbins_y, clipping,
+                               self.xdata, self.ydata)
         try:  # Consult the memo table first.
             result = self._rasters[memokey]
         except KeyError:  # Not yet in memo, so create it.
