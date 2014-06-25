@@ -19,8 +19,8 @@ import densitycontour
 # x_array and y_array are "raw" inputs.
 sample_data = densitycontour.ScatterData(x_array, y_array)
 
-# The 32x32 raster array used for plotting.
-raster = sample_data.rasterize(32, 32)
+# Create a raster array for plotting, using default binning.
+raster = sample_data.rasterize()
 
 # Use the ZoomedContourVisualizer post-processor on the raster array.
 contours = densitycontour.ZoomedContourVisualizer(raster, mode="nearest")
