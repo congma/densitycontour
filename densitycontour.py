@@ -331,8 +331,11 @@ def _test():
     raster = data.rasterize(32, 32)
     vis_backends = (NaiveContourVisualizer, ZoomedContourVisualizer,
                     MFZoomedContourVisualizer)
+    titles = ("NaiveContourVisualizer", "ZoomedContourVisualizer",
+              "MFZoomedContourVisualizer")
     # pylint: disable=W0612
     fig, axs = pylab.subplots(1, 3, sharex=True, sharey=True)
+    titleft = {"fontsize": 10}
     # pylint: enable=W0612
     for i in xrange(len(vis_backends)):
         vbackend = vis_backends[i]
@@ -346,6 +349,7 @@ def _test():
         sub.set_aspect("equal", adjustable="box-forced", anchor="C")
         sub.set_ylim((-3.5, 3.5))
         sub.set_xlim((-3.5, 3.5))
+        sub.set_title(titles[i], fontdict=titleft)
     pylab.show()
     return None
 
