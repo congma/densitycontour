@@ -33,6 +33,11 @@ contours.plot((0.5, 0.9))
 pylab.show()
 ```
 
+The resulting figure should look like the image showed in one of the
+following panels:
+
+![Test output of densitycontour](densitycontour-test.png?raw=true "Test output of densitycontour")
+
 You can run the module as a Python script to see the test diagrams.
 
 
