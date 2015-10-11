@@ -304,7 +304,8 @@ class ZoomedContourVisualizer(ContourVisualizerBase):
 
 class MFZoomedContourVisualizer(ZoomedContourVisualizer):
     """Upsampling visualizer with post-blurring using median filter."""
-    def __init__(self, other, size=4, zoom_prefilter=True, *args, **kwargs):
+    def __init__(self, other, zoom=3, size=4, zoom_prefilter=True,
+                 *args, **kwargs):
         """Initialize a MFZoomedContourVisualizer instance.
 
         Additional arguments
