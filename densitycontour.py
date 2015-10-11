@@ -233,7 +233,8 @@ class ContourVisualizerBase(object):
         self.levelfinder = other.level_by_confidence
         return None
 
-    def plot(self, confidence_levels, axes=None, **contour_kwargs):
+    def plot(self, confidence_levels, axes=None, filled=False,
+             **contour_kwargs):
         """Plot as matplotlib contour.
 
         Arguments
@@ -251,9 +252,13 @@ class ContourVisualizerBase(object):
         imglevels = [self.levelfinder(x) for x in confidence_levels]
         if axes is None:
             axes = pylab
-        contour = axes.contour(self._xdat, self._ydat, self._zdat,
-                               levels=imglevels,
-                               origin="lower", **contour_kwargs)
+        if filled:
+            cmd = "contourf"
+        else:
+            cmd = "contour"
+        contour = axes.__getattribute__(cmd)(self._xdat, self._ydat,
+                                             self._zdat, levels=imglevels,
+                                             origin="lower", **contour_kwargs)
         return contour
 
 
