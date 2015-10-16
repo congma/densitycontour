@@ -5,6 +5,7 @@ import weakref
 import numpy
 import scipy.optimize
 import scipy.ndimage
+from scipy.special import cbrt
 import pylab
 
 
@@ -87,8 +88,7 @@ def _freedman_diaconis_nbins(data1d, clipping):
         dataview = data1d
     pwidth = numpy.percentile(dataview, 75) - numpy.percentile(dataview, 25)
     datarange = dataview.max() - dataview.min()
-    return int(datarange * numpy.power(dataview.shape[0], 1.0 / 3.0) /
-               2.0 / pwidth)
+    return int(datarange * cbrt(dataview.shape[0]) / 2.0 / pwidth)
 
 
 class ScatterData(object):
