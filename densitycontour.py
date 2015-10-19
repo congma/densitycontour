@@ -88,7 +88,8 @@ def _freedman_diaconis_nbins(data1d, clipping):
         dataview = data1d
     pwidth = numpy.percentile(dataview, 75) - numpy.percentile(dataview, 25)
     datarange = dataview.max() - dataview.min()
-    return int(datarange * cbrt(dataview.shape[0]) / 2.0 / pwidth)
+    return int(datarange * numpy.sqrt(numpy.sqrt((dataview.shape[0])))
+               / 0.9 / pwidth)
 
 
 class ScatterData(object):
