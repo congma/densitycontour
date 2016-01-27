@@ -27,7 +27,7 @@ contours = densitycontour.ZoomedContourVisualizer(raster, mode="nearest")
 
 # Plot the contours for confidence levels 50% and 90% respectively,
 # using default settings.
-contours.plot((0.5, 0.9))
+contours.plot((0.9, 0.5))
 
 # Show the figure.
 pylab.show()
