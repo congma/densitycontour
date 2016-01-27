@@ -352,7 +352,7 @@ def _test():
                     edgecolor="green", marker=".", antialiased=True)
         cont = vbackend(raster, mode="nearest")
         cont.plot([0.9, 0.5], axes=sub, colors="black",
-                  linestyles=["--", "-", ":"], antialiased=True, alpha=0.8)
+                  linestyles=["--", "-"], antialiased=True, alpha=0.8)
         sub.set_aspect("equal", adjustable="box-forced", anchor="C")
         sub.set_ylim((-3.5, 3.5))
         sub.set_xlim((-3.5, 3.5))
